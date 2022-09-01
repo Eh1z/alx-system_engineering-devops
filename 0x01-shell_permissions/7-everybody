@@ -1,2 +1,2 @@
 #!/bin/bash
-chmod +x 7-everybody
+chmod +x hello

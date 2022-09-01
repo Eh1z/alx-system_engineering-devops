@@ -1,3 +1,9 @@
+Personal: The reason for this is very strange
+I made this script when I was almost at the end of the project and was tired of typing git add...blahblah everytime.
+Did not want to do it in git hub, did everything on terminal so I will build muscle memory for typing. 
+Weird right, I know, I am a strange human being lol.
+I created an extremely simple git add, commit and push sequence script named git, It makes my commits 3x faster. Automation is awesome!
+
 Exercise 0: su betty    
 Script that changes your user ID to betty.
 
@@ -55,4 +61,4 @@ Play the Star Wars IV episode in the terminal. This is a premade script provided
 
 Exercise 18: Create a manual that looks as provided.
 
-Personal: I created a git add, commit and push sequence script named git, It makes my commits 3x faster. Automation is awesome!
+

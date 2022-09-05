@@ -1,0 +1,4 @@
+#!/bin/bash
+git add .
+git commit -m 'I created a git push script for shell I/O redirections and it did this for me'
+git push

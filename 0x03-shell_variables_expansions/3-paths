@@ -1,2 +1,2 @@
-#!/bin/bash:wq
+#!/bin/bash
 echo $PATH | tr ':' '\n' | cut -d'/' -f2 -s | wc -l

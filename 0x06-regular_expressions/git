@@ -2,7 +2,7 @@
 
 clear
 
-read -p "Enter Your Commit Master Godsent:  " my_message
+read -p "Enter Your Commit Message Master Godsent:  " my_message
 
 echo ". . . Giving User Permission To Execute File . . ."
 chmod u+x *

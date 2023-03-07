@@ -1,0 +1,17 @@
+#!/bin/bash
+
+clear
+
+read -p "Enter Your Commit Message Master Godsent:  " my_message
+
+echo ". . . Giving User Permission To Execute File . . ."
+chmod u+x *
+echo ". . . . Now Uploading Changes . . . ."
+
+
+
+git add .
+git commit -m "${my_message}"
+git push 
+
+echo ". . . . . . Your Changes Have Been Uploaded Master Godsent. . . . . ."

@@ -16,8 +16,8 @@ frontend  Ehiz-frontend
         default_backend Ehiz-backend
 backend Ehiz-backend
         balance roundrobin
-        server 109897-web-01 100.25.19.204:80 check //	54.89.182.7
-        server 109897-web-01 54.157.159.85:80 check
+        server 109897-web-01 34.201.161.188:80 check 
+        server 109897-lb-01 54.90.25.120:80 check
 "
 echo "$server_config" | sudo tee -a /etc/haproxy/haproxy.cfg
 

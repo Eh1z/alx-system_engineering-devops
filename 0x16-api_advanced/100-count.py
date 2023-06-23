@@ -1,18 +1,34 @@
 #!/usr/bin/python3
-""" recursive function that queries the Reddit API"""
+"""
+Querries the Reddit API and returns a list of the titles of all hot posts
+listed for a given subreddit
+"""
+
+import json
 import requests
-import sys
-after = None
-count_dic = []
 
 
-def count_words(subreddit, word_list):
-    """parses the title of all hot articles, and prints a sorted count of given
-    keywords (case-insensitive, delimited by spaces) """
-    global after
-    global count_dic
-    headers = {'User-Agent': 'xica369'}
+def recurse(subreddit, hot_list=[], after=None):
+    """Return a list of the titles of all hot posts listed for a subreddit"""
+    headers = {"user-agent": "holberton"}
+    params = {"after": after}
     url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
-    parameters = {'after': after}
-    response = requests.get(url, headers=headers, allow_redirects=False,
-                            params=parameters)
+    subdata = requests.get(url, headers=headers, params=params)
+
+    if subdata.status_code != 200:
+        return None
+    data = json.loads(subdata.text).get('data').get('children')
+    after = json.loads(subdata.text).get('data').get('after')
+    if data is None:
+        if len(hot_list) == 0:
+            return None
+        return hot_list
+    else:
+        for item in data:
+            hot_list.append(item.get('data').get('title'))
+    if after is None:
+        if len(hot_list) == 0:
+            return None
+        return hot_list
+    else:
+        return recurse(subreddit, hot_list, after)

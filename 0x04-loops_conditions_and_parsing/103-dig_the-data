@@ -1,8 +1,53 @@
 #!/usr/bin/env bash
-# This script parses Apache log files in list format.
-#   Groups visitors by IP and HTTP status code.
-#   Displays the number of occurrences, IP, and HTTP status
-#+  code of each log, in sorted order.
+# Apache Log Analysis Pipeline
+#
+# Purpose: Parse and analyze Apache access logs to identify traffic patterns
+#          and potential issues by IP address and HTTP status code
+#
+# Use Cases:
+#   - Identifying top traffic sources (by IP)
+#   - Detecting problematic clients (high error rates)
+#   - Security analysis (identifying attack patterns)
+#   - Performance monitoring (4xx/5xx error rates)
+#
+# Output Format: 
+#   <count> <IP_address> <HTTP_status_code>
+#   Sorted by count (descending) - highest traffic first
+#
+# Algorithm:
+#   1. Extract IP (field 1) and status code (field 9) from each log line
+#   2. Sort entries to group identical IP+status combinations
+#   3. Count unique occurrences (uniq -c)
+#   4. Sort by count in descending order (most frequent first)
+#
+# Apache Log Format (Common Log Format):
+#   IP - - [timestamp] "method path protocol" status size "referer" "user-agent"
+#   Field 1: IP address
+#   Field 9: HTTP status code (200, 404, 500, etc.)
+#
+# Example Output:
+#   150 192.168.1.100 200   (150 successful requests from this IP)
+#    45 192.168.1.100 404   (45 not-found errors from same IP)
+#    12 10.0.0.50 500       (12 server errors from different IP)
+#
+# Production Improvements:
+#   - Add date range filtering for specific time periods
+#   - Include response time analysis
+#   - Add geolocation lookup for IPs
+#   - Generate alerts for suspicious patterns (high 4xx/5xx rates)
 
 myfile="apache-access.log"
-awk -F' ' '{ print $1, $9}' $myfile | sort | uniq -c|sort -nr
+
+# AWK: Extract IP and status code fields
+# -F' ': Use space as field delimiter
+# print $1, $9: Output field 1 (IP) and field 9 (status code)
+#
+# Pipeline breakdown:
+# awk ... | sort | uniq -c | sort -nr
+#   ↓         ↓      ↓          ↓
+#   extract   group  count      order by frequency
+#
+# sort: Group identical IP+status combinations together (required for uniq)
+# uniq -c: Count occurrences of each unique combination
+# sort -nr: Numerical sort (-n), reverse order (-r) = highest count first
+awk -F' ' '{ print $1, $9}' $myfile | sort | uniq -c | sort -nr

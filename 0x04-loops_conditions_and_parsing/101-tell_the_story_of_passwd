@@ -1,17 +1,91 @@
 #!/usr/bin/env bash
-# This script tells a story based on the contents of the `/etc/passwd` file
+# /etc/passwd Parser - Human-Readable System User Information
+#
+# Purpose: Parse and display Linux system user information in narrative format
+#
+# Educational Value:
+#   - Demonstrates understanding of /etc/passwd structure
+#   - Shows field extraction techniques (cut with delimiter)
+#   - Illustrates while-loop file processing pattern
+#   - Practices variable assignment and string interpolation
+#
+# /etc/passwd Format (7 colon-separated fields):
+#   username:password:UID:GID:comment:home_dir:shell
+#
+# Field Breakdown:
+#   1. Username: User login name
+#   2. Password: 'x' (actual password in /etc/shadow for security)
+#   3. UID: User ID (0 = root, 1-999 = system, 1000+ = regular users)
+#   4. GID: Primary Group ID
+#   5. Comment/GECOS: Full name and other info
+#   6. Home Directory: User's home directory path
+#   7. Shell: Default shell for user (e.g., /bin/bash, /bin/false)
+#
+# Example /etc/passwd entry:
+#   john:x:1000:1000:John Doe:/home/john:/bin/bash
+#
+# Security Note:
+#   Modern systems use /etc/shadow for password hashes (not in /etc/passwd)
+#   This prevents non-privileged users from accessing password hashes
+#
+# Use Cases:
+#   - System auditing (who has access?)
+#   - User enumeration for security assessments
+#   - Automated user documentation
+#   - Identifying service accounts vs human users
+
 myfile="/etc/passwd"
-f1=""
-f2=""
-f3=""
+
+# Variable declarations for clarity
+# These will be reassigned in the loop for each user
+f1=""  # Username
+f2=""  # Group ID
+f3=""  # Home directory
+f4=""  # Default shell
+f5=""  # User ID
+f6=""  # Password field
+f7=""  # Comment/GECOS field
+
+# Read file line by line
+# IFS= : Prevents leading/trailing whitespace trimming
+# read -r : Prevents backslash escape interpretation (read raw)
 while IFS= read -r line
 do
-    f1="$(echo "$line" | cut -d":" -f1)"
-    f2="$(echo "$line" | cut -d":" -f4)"
-    f3="$(echo "$line" | cut -d":" -f6)"
-    f4="$(echo "$line" | cut -d":" -f7)"
-    f5="$(echo "$line" | cut -d":" -f3)"
-    f6="$(echo "$line" | cut -d":" -f2)"
-    f7="$(echo "$line" | cut -d":" -f5)"
+    # Extract fields using cut with colon delimiter
+    # -d":" : Use colon as field separator
+    # -f1 : Extract field 1 (username)
+    f1="$(echo "$line" | cut -d":" -f1)"  # Field 1: Username
+    f2="$(echo "$line" | cut -d":" -f4)"  # Field 4: GID (Group ID)
+    f3="$(echo "$line" | cut -d":" -f6)"  # Field 6: Home directory
+    f4="$(echo "$line" | cut -d":" -f7)"  # Field 7: Default shell
+    f5="$(echo "$line" | cut -d":" -f3)"  # Field 3: UID (User ID)
+    f6="$(echo "$line" | cut -d":" -f2)"  # Field 2: Password field (usually 'x')
+    f7="$(echo "$line" | cut -d":" -f5)"  # Field 5: GECOS/Comment field
+    
+    # Format user information as a narrative
+    # Creative mapping of technical fields to story elements:
+    #   - Username → character name
+    #   - GID → "gang" (user group)
+    #   - Home directory → "lives in" (literal)
+    #   - Shell → "rides" (what they use to interact with system)
+    #   - UID → possessive form of username
+    #   - Password field → "passcode" (security element)
+    #   - GECOS → "more info" (additional user details)
     echo "The user ${f1} is part of the ${f2} gang, lives in ${f3} and rides ${f4}. ${f5}'s place is protected by the passcode ${f6}, more info about the user here: ${f7}"
-done < "$myfile"
+    
+done < "$myfile"  # Input redirection: Read from /etc/passwd
+
+# Alternative Approaches:
+#
+# 1. Using awk (more efficient):
+#    awk -F: '{print "The user", $1, "is part of the", $4, "gang..."}' /etc/passwd
+#
+# 2. Using IFS directly:
+#    while IFS=: read -r f1 f6 f5 f2 f7 f3 f4; do
+#        echo "The user $f1..."
+#    done < /etc/passwd
+#
+# 3. Using array:
+#    while IFS=: read -ra fields; do
+#        echo "The user ${fields[0]}..."
+#    done < /etc/passwd

@@ -1,21 +1,52 @@
 #!/usr/bin/env bash
-# This script displays numbers from 1 to 100 in list format
-#   Displays "FizzBuzz" when the number is a multiple of 3 and 5
-#   Displays "Fizz" when the number is a multiple of 3
-#   Displays "Buzz" when the number is a multiple of 5
-#   Otherwise, displays the number
+# FizzBuzz Algorithm Implementation
+#
+# Classic Programming Problem: FizzBuzz
+# Often used in technical interviews to assess basic programming logic
+#
+# Rules:
+#   - For multiples of 3: Print "Fizz"
+#   - For multiples of 5: Print "Buzz"
+#   - For multiples of both 3 and 5: Print "FizzBuzz"
+#   - For other numbers: Print the number itself
+#
+# Algorithm Complexity: O(n) - linear time, one pass through 1-100
+# Space Complexity: O(1) - constant space, no data structures needed
+#
+# Key Programming Concepts:
+#   - Modulo operator (%) for divisibility testing
+#   - Conditional logic with proper precedence
+#   - Loop control structures (for loop)
+#
+# Why Order Matters:
+#   Must check "divisible by both" FIRST, otherwise:
+#   - 15 would print "Fizz" (divisible by 3) and never reach "FizzBuzz"
+#   - This demonstrates understanding of conditional evaluation order
+#
+# Production Note:
+#   In real systems, this pattern appears in:
+#   - Batch processing with conditional logic
+#   - Data validation with multiple rules
+#   - Classification algorithms with priority rules
 
+# Loop from 1 to 100 inclusive
 for num in {1..100}
 do
+  # Critical: Check divisible by BOTH first (3 AND 5)
+  # num % 15 == 0 is equivalent to (num % 3 == 0 && num % 5 == 0)
+  # Using % 15 is more efficient (one modulo operation vs two)
   if (( num % 3 == 0 && num % 5 == 0 ))
   then
     echo "FizzBuzz"
+  # Check divisible by 3
   elif (( num % 3 == 0 ))
   then
     echo "Fizz"
+  # Check divisible by 5
   elif (( num % 5 == 0 ))
   then
     echo "Buzz"
+  # Default: number is not divisible by 3 or 5
   else
     echo "$num"
   fi

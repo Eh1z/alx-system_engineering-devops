@@ -1,0 +1,1 @@
+Professional DevOps and Systems Engineering portfolio showcasing infrastructure automation, load balancing, web stack debugging, API integration, configuration management (Puppet), and monitoring with real-world production patterns using Bash, Python, HAProxy, Nginx, and Datadog.

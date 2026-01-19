@@ -1,28 +1,63 @@
 #!/usr/bin/env bash
-# Create a script to install and configure HAProxy on lb-01 server
-# Configure HAProxy to send traffic to web-01 and web-02 servers
-# Distribute requests using a roundrobin algorithm
-# Make sure that HAProxy can be managed via an init script
-# Install and configure HAproxy on my lb-01 server.
+# HAProxy Load Balancer Installation and Configuration
+#
+# Purpose: Automate deployment of HAProxy for high-availability web architecture
+# 
+# Architecture:
+#   Internet → HAProxy (Port 80) → Backend Web Servers (Round-Robin)
+#
+# Key Features:
+#   - Automatic failover with health checks
+#   - Even traffic distribution via round-robin algorithm
+#   - Layer 7 (HTTP) load balancing for protocol-aware routing
+#
+# Production Notes:
+#   - This configuration uses HTTP (port 80). For production, add HTTPS/SSL termination
+#   - Backend servers are hardcoded. Consider service discovery for dynamic scaling
+#   - Health checks enabled with 'check' directive for automatic failure detection
+
+# Update package index to ensure we get the latest HAProxy version
 sudo apt-get -y update
+
+# Install HAProxy load balancer
+# HAProxy is purpose-built for high performance load balancing and proxying
 apt-get -y install haproxy
 
-# edit config file
+# Configure HAProxy with frontend and backend sections
+# Frontend: Defines how requests are received
+# Backend: Defines where requests are sent
 server_config=\
 "
 frontend  Ehiz-frontend
+        # Listen on all interfaces, port 80 (HTTP)
         bind *:80
+        # Use HTTP mode for Layer 7 load balancing
+        # Allows HTTP-specific features like header manipulation
         mode http
+        # Route all traffic to the backend server pool
         default_backend Ehiz-backend
+
 backend Ehiz-backend
+        # Round-robin: Distribute requests evenly across all healthy servers
+        # Simple and fair, ideal for stateless applications
         balance roundrobin
+        
+        # Backend server definitions
+        # Format: server <name> <ip:port> <options>
+        # 'check' enables health checking - HAProxy will automatically
+        # remove unhealthy servers from rotation
         server 109897-web-01 34.201.161.188:80 check 
         server 109897-lb-01 54.90.25.120:80 check
 "
+
+# Append configuration to HAProxy config file
+# Using tee with -a (append) to preserve existing configuration
 echo "$server_config" | sudo tee -a /etc/haproxy/haproxy.cfg
 
-# enable haproxy to be started by init script
-
+# Enable HAProxy to start automatically via init system
+# Required for service to start on boot and be managed by service commands
 echo "ENABLED=1" | sudo tee -a /etc/default/haproxy
 
+# Restart HAProxy to apply new configuration
+# HAProxy will begin accepting traffic and distributing to backends
 sudo service haproxy restart
